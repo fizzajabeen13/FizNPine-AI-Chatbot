@@ -1,0 +1,41 @@
+/* =========================
+   LIGHT MODE
+========================= */
+
+:root[data-theme="light"] {
+
+    --chat-bg: #f6f8fa;
+
+    --text: #192338;
+
+    --sidebar-bg: #d7e1f4;
+
+    --button-bg: #192338;
+    --button-text: #f6f8fa;
+
+    --user-bubble: #8fb3e2;
+    --ai-bubble: #d9e1f1;
+
+    --input-bg: #8fb3e2;
+}
+
+/* =========================
+   DARK MODE
+========================= */
+
+:root[data-theme="dark"] {
+
+    --chat-bg: #141f35;
+
+    --text: #05101b;
+
+    --sidebar-bg: #bcbfcc;
+
+    --button-bg: #f6f8fa;
+    --button-text: #1e2e4f;
+
+    --user-bubble: #bedaff;
+    --ai-bubble: #d6e1f5;
+
+    --input-bg: #bedaff;
+}

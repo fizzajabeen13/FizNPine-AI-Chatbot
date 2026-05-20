@@ -1,0 +1,75 @@
+  
+/* =========================
+   BASE LAYOUT (DESKTOP FIRST)
+========================= */
+
+.chat-box {
+    flex: 1;
+}
+
+/* Sidebar default (desktop) */
+.sidebar {
+    width: 250px;
+    height: 100%;
+}
+
+/* Hamburger hidden on desktop */
+.hamburger-btn {
+    display: none;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    font-size: 26px;
+    cursor: pointer;
+    z-index: 1000;
+    background: transparent;
+    border: none;
+}
+
+/* =========================
+   TABLET (<= 1024px)
+========================= */
+
+@media (max-width: 1024px) {
+
+    .sidebar {
+        width: 220px;
+    }
+
+    .chat-box {
+        padding: 10px;
+    }
+}
+
+/* =========================
+   MOBILE (<= 768px)
+========================= */
+
+@media (max-width: 768px) {
+
+    /* show hamburger */
+    .hamburger-btn {
+        display: block;
+    }
+
+    /* IMPORTANT: sidebar becomes overlay controlled by React */
+    .sidebar {
+        width: 250px;
+    }
+
+    /* prevent layout breaking */
+    .chat-box {
+        width: 100%;
+    }
+}
+
+/* =========================
+   SMALL MOBILE (<= 500px)
+========================= */
+
+@media (max-width: 500px) {
+
+    .sidebar {
+        width: 85%;
+    }
+}
