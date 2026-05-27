@@ -8,10 +8,7 @@ import PersonalitySelector from "../components/PersonalitySelector";
 import ThemeToggle from "../components/ThemeToggle";
 import Navbar from "../components/Navbar";
 
-import {
-    FiMenu,
-    FiX
-} from "react-icons/fi";
+import { FiMenu, FiX } from "react-icons/fi";
 
 import { sendMessageToAI, generateChatTitle } from "../services/api";
 import { useChat } from "../context/ChatContext";
@@ -40,7 +37,6 @@ function ChatPage() {
         };
 
         window.addEventListener("resize", handleResize);
-
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
@@ -54,32 +50,23 @@ function ChatPage() {
             text: currentMessage
         };
 
-        setMessages((prev) => [
-            ...prev,
-            userMessage
-        ]);
-
+        setMessages((prev) => [...prev, userMessage]);
         setMessage("");
         setLoading(true);
 
-        // Check if this is the first message in a newly created chat
-        // (If messages.length === 0, the first message is being sent now)
         const isFirstMessage = messages.length === 0;
 
         try {
-            // Asynchronously generate title if it's the first message, BEFORE main response
+            // Generate chat title for first message only
             if (isFirstMessage) {
                 try {
                     const res = await generateChatTitle(currentMessage);
+
                     if (res && res.title && res.title !== "New Chat") {
-                        const cleanTitle = res.title.replace(/^["']|["']$/g, '');
-                        // Small delay to ensure currentChatIdRef has updated
-                        setTimeout(() => {
-                            const activeId = currentChatIdRef.current;
-                            if (activeId) {
-                                updateChatTitle(activeId, cleanTitle);
-                            }
-                        }, 200);
+                        const cleanTitle = res.title.replace(/^["']|["']$/g, "");
+
+                        // Just update title directly (no ref needed)
+                        updateChatTitle(null, cleanTitle);
                     }
                 } catch (err) {
                     console.error("Title generation failed", err);
@@ -96,10 +83,7 @@ function ChatPage() {
                 text: response.reply || "I could not generate a response."
             };
 
-            setMessages((prev) => [
-                ...prev,
-                aiMessage
-            ]);
+            setMessages((prev) => [...prev, aiMessage]);
 
         } catch (error) {
             setMessages((prev) => [
@@ -154,6 +138,7 @@ function ChatPage() {
                     <div className="chat-header">
                         <PersonalitySelector />
                     </div>
+
                     <ChatBox
                         messages={messages}
                         loading={loading}
