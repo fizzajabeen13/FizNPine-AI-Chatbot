@@ -51,7 +51,7 @@ export const ChatProvider = ({ children }) => {
     }, []);
 
     // keep ref synced (if needed externally)
-    const [_, forceUpdate] = useState(0); // optional rerender helper
+    const [forceUpdateKey, setForceUpdateKey] = useState(0);
 
     // =========================
     // PERSONALITY
