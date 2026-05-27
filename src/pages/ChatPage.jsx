@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import ChatBox from "../components/ChatBox";
 import MessageInput from "../components/MessageInput";
@@ -6,7 +6,6 @@ import NewChatButton from "../components/NewChatButton";
 import SearchChats from "../components/SearchChats";
 import PersonalitySelector from "../components/PersonalitySelector";
 import ThemeToggle from "../components/ThemeToggle";
-import Loader from "../components/Loader";
 import Navbar from "../components/Navbar";
 
 import {
@@ -14,317 +13,164 @@ import {
     FiX
 } from "react-icons/fi";
 
-import { motion } from "framer-motion";
-
-import { sendMessageToAI } from "../services/api";
+import { sendMessageToAI, generateChatTitle } from "../services/api";
 import { useChat } from "../context/ChatContext";
 
 function ChatPage() {
-
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
-
     const [sidebarOpen, setSidebarOpen] = useState(false);
-
-    const [isMobile, setIsMobile] = useState(
-        window.innerWidth <= 768
-    );
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
     const {
         messages,
         setMessages,
+        currentChatId,
+        currentChatIdRef,
+        updateChatTitle,
         personality
     } = useChat();
 
-    // =========================
-    // RESPONSIVE CHECK
-    // =========================
-
     useEffect(() => {
-
         const handleResize = () => {
-            setIsMobile(window.innerWidth <= 768);
+            const mobile = window.innerWidth <= 768;
+            setIsMobile(mobile);
+
+            if (!mobile) {
+                setSidebarOpen(false);
+            }
         };
 
-        window.addEventListener(
-            "resize",
-            handleResize
-        );
+        window.addEventListener("resize", handleResize);
 
-        return () =>
-            window.removeEventListener(
-                "resize",
-                handleResize
-            );
-
+        return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    // =========================
-    // SEND MESSAGE
-    // =========================
-
     const handleSendMessage = async () => {
+        const currentMessage = message.trim();
 
-        if (!message.trim()) return;
+        if (!currentMessage || loading) return;
 
         const userMessage = {
             sender: "user",
-            text: message
+            text: currentMessage
         };
 
-        setMessages(prev => [
+        setMessages((prev) => [
             ...prev,
             userMessage
         ]);
 
-        const currentMessage = message;
-
         setMessage("");
-
         setLoading(true);
 
-        try {
+        // Check if this is the first message in a newly created chat
+        // (If messages.length === 0, the first message is being sent now)
+        const isFirstMessage = messages.length === 0;
 
-            const response =
-                await sendMessageToAI(
-                    currentMessage,
-                    personality
-                );
+        try {
+            // Asynchronously generate title if it's the first message, BEFORE main response
+            if (isFirstMessage) {
+                try {
+                    const res = await generateChatTitle(currentMessage);
+                    if (res && res.title && res.title !== "New Chat") {
+                        const cleanTitle = res.title.replace(/^["']|["']$/g, '');
+                        // Small delay to ensure currentChatIdRef has updated
+                        setTimeout(() => {
+                            const activeId = currentChatIdRef.current;
+                            if (activeId) {
+                                updateChatTitle(activeId, cleanTitle);
+                            }
+                        }, 200);
+                    }
+                } catch (err) {
+                    console.error("Title generation failed", err);
+                }
+            }
+
+            const response = await sendMessageToAI(
+                currentMessage,
+                personality
+            );
 
             const aiMessage = {
                 sender: "ai",
-                text: response.reply
+                text: response.reply || "I could not generate a response."
             };
 
-            setMessages(prev => [
+            setMessages((prev) => [
                 ...prev,
                 aiMessage
             ]);
 
         } catch (error) {
-
-            console.log(error);
-
+            setMessages((prev) => [
+                ...prev,
+                {
+                    sender: "ai",
+                    text: "Something went wrong. Please check the backend and try again."
+                }
+            ]);
+        } finally {
+            setLoading(false);
         }
 
-        setLoading(false);
-
-        // Auto close sidebar on mobile
         if (isMobile) {
             setSidebarOpen(false);
         }
     };
 
     return (
-
-        <div
-            style={{
-                height: "100vh",
-                overflow: "hidden",
-                background: "var(--chat-bg)"
-            }}
-        >
-
-            {/* =========================
-                MOBILE HAMBURGER
-            ========================= */}
-
+        <div className="chat-shell">
             {isMobile && (
-
                 <button
-                    onClick={() =>
-                        setSidebarOpen(prev => !prev)
-                    }
-                    style={{
-                        position: "fixed",
-                        top: "20px",
-                        left: "20px",
-
-                        zIndex: 3000,
-
-                        background: "transparent",
-
-                        border: "none",
-
-                        color: "var(--text)",
-
-                        fontSize: "28px",
-
-                        cursor: "pointer"
-                    }}
+                    className="mobile-menu-button"
+                    aria-label={sidebarOpen ? "Close menu" : "Open menu"}
+                    onClick={() => setSidebarOpen((prev) => !prev)}
                 >
-                    {sidebarOpen
-                        ? <FiX />
-                        : <FiMenu />}
+                    {sidebarOpen ? <FiX /> : <FiMenu />}
                 </button>
             )}
 
-            {/* =========================
-                MOBILE OVERLAY
-            ========================= */}
-
             {isMobile && sidebarOpen && (
-
                 <div
-                    onClick={() =>
-                        setSidebarOpen(false)
-                    }
-                    style={{
-                        position: "fixed",
-                        inset: 0,
-
-                        background: "var(--sidebar-bg)",
-
-                        opacity: 0.5,
-
-                        zIndex: 1500
-                    }}
+                    className="sidebar-overlay"
+                    onClick={() => setSidebarOpen(false)}
                 />
             )}
 
-            {/* =========================
-                SIDEBAR
-            ========================= */}
-
-            <motion.div
-
-                animate={{
-                    x: isMobile
-                        ? (sidebarOpen ? 0 : -300)
-                        : 0
-                }}
-
-                transition={{
-                    duration: 0.25
-                }}
-
-                style={{
-
-                    width: "220px",
-
-                    height: "100vh",
-
-                    background: "var(--sidebar-bg)",
-
-                    backdropFilter: "blur(12px)",
-
-                    borderRight:
-                        "1px solid rgba(255,255,255,0.08)",
-
-                    boxShadow:
-                        "0 0 20px rgba(0,0,0,0.3)",
-
-                    position: "fixed",
-
-                    top: 0,
-
-                    left: 0,
-
-                    zIndex: 2000,
-
-                    paddingTop: "70px",
-
-                    paddingLeft: "20px",
-
-                    paddingRight: "20px",
-
-                    overflow: "hidden"
-                }}
+            <aside
+                className={`chat-sidebar ${isMobile && sidebarOpen ? "chat-sidebar-open" : ""}`}
             >
-
-                {/* BRANDING */}
                 <Navbar />
-                <div
-                  style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "12px",
-                  marginTop: "20px"
-                }}
-                >
 
-                {/* SIDEBAR CONTENT */}
-                <NewChatButton />
+                <div className="sidebar-actions">
+                    <NewChatButton />
+                    <SearchChats />
+                    <ThemeToggle />
+                </div>
+            </aside>
 
-                <SearchChats />
-
-                <PersonalitySelector />
-
-                <ThemeToggle />
-              </div>
-
-            </motion.div>
-
-            {/* =========================
-                MAIN CHAT AREA
-            ========================= */}
-
-            <div
-                style={{
-                    marginLeft:
-                        isMobile ? 0 : "260px",
-
-                    width:
-                        isMobile
-                            ? "100%"
-                            : "calc(100% - 260px)",
-
-                    height: "100vh",
-
-                    display: "flex",
-
-                    flexDirection: "column",
-
-                    background:
-                        "var(--chat-bg)"
-                }}
-            >
-
-                {/* CHAT SCROLL AREA */}
-
-                <div
-                    style={{
-                        flex: 1,
-
-                        overflowY: "auto",
-
-                        padding: "2px",
-
-                        paddingTop:
-                            isMobile
-                                ? "2px"
-                                : "2px"
-                    }}
-                >
-
+            <main className="chat-main">
+                <div className="chat-scroll">
+                    <div className="chat-header">
+                        <PersonalitySelector />
+                    </div>
                     <ChatBox
                         messages={messages}
+                        loading={loading}
                     />
-
-                    {loading && <Loader />}
-
                 </div>
 
-                {/* INPUT SECTION */}
-
-                <div
-                    style={{
-                        padding: "10px"
-                    }}
-                >
-
+                <div className="composer-wrap">
                     <MessageInput
                         message={message}
                         setMessage={setMessage}
-                        handleSendMessage={
-                            handleSendMessage
-                        }
+                        handleSendMessage={handleSendMessage}
+                        loading={loading}
                     />
-
                 </div>
-
-            </div>
-
+            </main>
         </div>
     );
 }

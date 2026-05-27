@@ -1,40 +1,45 @@
 import React, { useEffect, useRef } from "react";
 import MessageBubble from "./MessageBubble";
+import Loader from "./Loader";
+import { useChat } from "../context/ChatContext";
 
-function ChatBox({ messages }) {
-
+function ChatBox({ messages, loading }) {
+    const { personality } = useChat();
     const bottomRef = useRef(null);
 
-    // ✅ Correct place for debugging
-    console.log("ALL MESSAGES:", messages);
-
-    // Auto-scroll whenever messages change
     useEffect(() => {
         bottomRef.current?.scrollIntoView({
             behavior: "smooth"
         });
-    }, [messages]);
+    }, [messages, loading]);
 
     return (
-        <div style={{
-            flex: 1,
-            padding: "20px",
-            overflowY: "auto",
-            background: "var(--bg)"
-        }}>
+        <div className="chat-thread">
+            {messages.length === 0 ? (
+                <section className="empty-state">
+                    <div className="empty-logo">F</div>
+                    <h1>How can I help with your school project today?</h1>
+                    <p>
+                        Ask a question, or use voice input to start a conversation.
+                        <br /><br />
+                        <span className="personality-badge">
+                            Current Personality: <strong>{personality ? personality.charAt(0).toUpperCase() + personality.slice(1) : "Friendly"}</strong>
+                        </span>
+                    </p>
+                </section>
+            ) : (
+                messages.map((msg, index) => (
+                    <MessageBubble
+                        key={`${msg.sender}-${index}`}
+                        sender={msg.sender}
+                        text={msg.text}
+                    />
+                ))
+            )}
 
-            {/* Messages */}
-            {messages.map((msg, index) => (
-                <MessageBubble
-                    key={index}
-                    sender={msg.sender}
-                    text={msg.text}
-                />
-            ))}
+            {loading && <Loader />}
 
-            {/* Auto scroll anchor */}
             <div ref={bottomRef}></div>
-
         </div>
     );
 }

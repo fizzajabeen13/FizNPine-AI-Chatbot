@@ -1,53 +1,22 @@
 import React from "react";
 
 function Logo() {
-
     return (
-
-        <div style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "6px",
-            marginBottom: "25px",
-            alignItems: "center"
-        }}>
-
-            {/* LOGO IMAGE */}
+        <div className="logo">
             <img
                 src="/logo.svg"
                 alt="FizNPine AI Logo"
-                style={{
-                    width: "70px",
-                    height: "70px",
-                    objectFit: "contain"
-                }}
+                className="logo-mark"
             />
 
-            {/* LOGO TITLE */}
-            <h2 style={{
-                margin: 0,
-                padding: 0,
-                fontSize: "24px",
-                fontWeight: "700",
-                lineHeight: "1.2",
-                background: "var(--text)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent"
-            }}>
-                FizNPine AI
-            </h2>
-
-            {/* TAGLINE */}
-            <p style={{
-                margin: 0,
-                padding: 0,
-                fontSize: "13px",
-                color: "var(--text)",
-                lineHeight: "1.4"
-            }}>
-                Smart AI for learning & creativity
-            </p>
-
+            <div>
+                <h2 className="logo-title">
+                    FizNPine AI
+                </h2>
+                <p className="logo-tagline">
+                    Smart AI for learning and creativity
+                </p>
+            </div>
         </div>
     );
 }

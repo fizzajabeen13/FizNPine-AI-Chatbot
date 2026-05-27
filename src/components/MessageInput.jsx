@@ -6,83 +6,44 @@ import { FiSend } from "react-icons/fi";
 function MessageInput({
     message,
     setMessage,
-    handleSendMessage
+    handleSendMessage,
+    loading
 }) {
-
     const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
             handleSendMessage();
         }
     };
 
     return (
-
         <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.3 }}
-            className="glass input-bar"
-            style={{
-                display: "flex",
-                padding: "15px",
-                margin: "10px",
-                alignItems: "center",
-                gap: "10px",
-                flexWrap: "wrap"
-            }}
+            className="composer"
         >
-
-            {/* INPUT */}
-            <input
-                type="text"
+            <textarea
                 placeholder="Ask anything..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={handleKeyDown}
-                style={{
-                    flex: 1,
-                    padding: "12px",
-                    borderRadius: "8px",
-                    outline: "none",
-                    fontSize: "16px",
-                    background: "var(--input-bg)",
-                    color: "var(--text)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-                    placeholderTextColor: "var(--text)"
-                }}
+                rows={1}
+                className="composer-input"
             />
 
-            {/* VOICE INPUT */}
             <VoiceInput setMessage={setMessage} />
 
-            {/* SEND BUTTON (ANIMATED) */}
             <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleSendMessage}
-                style={{
-                    padding: "12px 20px",
-                    border: "none",
-                    borderRadius: "8px",
-                    color: "var(--button-text)",
-                    cursor: "pointer",
-                    fontSize: "18px",
-                    background: "var(--button-bg)",
-                    boxShadow: "0 4px 12px rgba(37,99,235,0.4)",
-                    transition: "0.2s"
-                }}
-                whileHover={{
-                  scale: 1.05
-                }}
-
-                whileTap={{
-                  scale: 0.95
-                }}
+                disabled={!message.trim() || loading}
+                className="icon-button icon-button-primary"
+                aria-label="Send message"
             >
                 <FiSend />
             </motion.button>
-
         </motion.div>
     );
 }

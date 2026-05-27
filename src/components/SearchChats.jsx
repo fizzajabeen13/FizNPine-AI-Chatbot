@@ -1,61 +1,66 @@
 import React, { useState } from "react";
 import { useChat } from "../context/ChatContext";
-import { FiSearch } from "react-icons/fi";
-
-import {
-    sidebarInputWrapperStyle,
-    sidebarInputStyle,
-    sidebarIconStyle,
-    sidebarResultItemStyle
-} from "../styles/sidebarButtonStyle";
+import { FiSearch, FiMessageSquare, FiTrash2 } from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
 
 function SearchChats() {
-    const { messages } = useChat();
+    const { chats, currentChatId, setCurrentChatId, deleteChat } = useChat();
 
     const [query, setQuery] = useState("");
-    const [results, setResults] = useState([]);
 
-    const handleSearch = (text) => {
-        setQuery(text);
+    const filteredChats = chats.filter((c) =>
+        c.title.toLowerCase().includes(query.toLowerCase())
+    );
 
-        if (!text.trim()) {
-            setResults([]);
-            return;
-        }
-
-        const filtered = messages.filter((msg) =>
-            msg.text.toLowerCase().includes(text.toLowerCase())
-        );
-
-        setResults(filtered);
+    const handleDelete = (e, id) => {
+        e.stopPropagation();
+        deleteChat(id);
     };
 
     return (
-        <div style={{ width: "100%" }}>
-
-            {/* SEARCH BOX (ONLY ONE LAYER) */}
-            <div style={sidebarInputWrapperStyle}>
+        <div className="search-panel">
+            <div className="sidebar-input-wrapper">
                 <input
                     type="text"
-                    placeholder="Search chats..."
+                    placeholder="Search past chats..."
                     value={query}
-                    onChange={(e) => handleSearch(e.target.value)}
-                    style={sidebarInputStyle}
+                    onChange={(e) => setQuery(e.target.value)}
+                    className="sidebar-input"
                 />
-
-                <FiSearch style={sidebarIconStyle} />
+                <FiSearch className="sidebar-input-icon" />
             </div>
 
-            {/* RESULTS */}
-            {results.length > 0 && (
-                <div style={{ marginTop: "10px" }}>
-                    {results.map((msg, index) => (
-                        <div key={index} style={sidebarResultItemStyle}>
-                            <b>{msg.sender}:</b> {msg.text}
-                        </div>
+            <div className="chat-history-list">
+                <AnimatePresence>
+                    {filteredChats.map((chat) => (
+                        <motion.div 
+                            key={chat.id} 
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+                            className={`history-item ${chat.id === currentChatId ? "active" : ""}`}
+                            onClick={() => setCurrentChatId(chat.id)}
+                        >
+                            <div className="history-item-content">
+                                <FiMessageSquare className="history-icon" />
+                                <span className={`history-title ${chat.title === 'Generating title...' ? 'generating-title' : ''}`}>
+                                    {chat.title || "New Chat"}
+                                </span>
+                            </div>
+                            <button 
+                                className="delete-chat-btn"
+                                onClick={(e) => handleDelete(e, chat.id)}
+                                aria-label="Delete chat"
+                            >
+                                <FiTrash2 />
+                            </button>
+                        </motion.div>
                     ))}
-                </div>
-            )}
+                </AnimatePresence>
+                {filteredChats.length === 0 && (
+                    <div className="history-empty">No chats found.</div>
+                )}
+            </div>
         </div>
     );
 }

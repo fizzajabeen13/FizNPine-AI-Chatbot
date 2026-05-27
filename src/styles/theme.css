@@ -2,21 +2,27 @@
    LIGHT MODE
 ========================= */
 
+:root,
 :root[data-theme="light"] {
-
-    --chat-bg: #f6f8fa;
-
-    --text: #192338;
-
-    --sidebar-bg: #d7e1f4;
-
-    --button-bg: #192338;
-    --button-text: #f6f8fa;
-
-    --user-bubble: #8fb3e2;
-    --ai-bubble: #d9e1f1;
-
-    --input-bg: #8fb3e2;
+    --chat-bg: #f7f7f4;
+    --surface: #ffffff;
+    --surface-strong: #f1f3f0;
+    --surface-muted: #eceee9;
+    --sidebar-bg: #f1f2ee;
+    --border: #d7d9d2;
+    --border-strong: #bfc3ba;
+    --text: #20221f;
+    --text-muted: #666c62;
+    --accent: #10a37f;
+    --accent-strong: #0e8f70;
+    --accent-soft: #dff3ed;
+    --button-bg: #20221f;
+    --button-text: #ffffff;
+    --user-bubble: #20221f;
+    --user-bubble-text: #ffffff;
+    --ai-bubble: transparent;
+    --input-bg: #ffffff;
+    --shadow: 0 18px 50px rgba(32, 34, 31, 0.08);
 }
 
 /* =========================
@@ -24,18 +30,23 @@
 ========================= */
 
 :root[data-theme="dark"] {
-
-    --chat-bg: #141f35;
-
-    --text: #05101b;
-
-    --sidebar-bg: #bcbfcc;
-
-    --button-bg: #f6f8fa;
-    --button-text: #1e2e4f;
-
-    --user-bubble: #bedaff;
-    --ai-bubble: #d6e1f5;
-
-    --input-bg: #bedaff;
+    --chat-bg: #161716;
+    --surface: #20211f;
+    --surface-strong: #282a27;
+    --surface-muted: #242622;
+    --sidebar-bg: #101110;
+    --border: #343832;
+    --border-strong: #4a5048;
+    --text: #f3f4ef;
+    --text-muted: #a6ada0;
+    --accent: #19c394;
+    --accent-strong: #20d5a4;
+    --accent-soft: rgba(25, 195, 148, 0.14);
+    --button-bg: #f3f4ef;
+    --button-text: #161716;
+    --user-bubble: #e7ebe5;
+    --user-bubble-text: #161716;
+    --ai-bubble: transparent;
+    --input-bg: #20211f;
+    --shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
 }

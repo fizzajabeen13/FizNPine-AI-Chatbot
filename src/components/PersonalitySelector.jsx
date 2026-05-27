@@ -2,54 +2,20 @@ import React from "react";
 import { useChat } from "../context/ChatContext";
 
 function PersonalitySelector() {
-
     const { personality, setPersonality } = useChat();
 
     return (
+        <div className="field-group">
+            <label className="field-label" htmlFor="personality-mode">
+                Personality
+            </label>
 
-        <div
-            style={{
-                marginTop: "15px",
-                width: "100%"
-            }}
-        >
-
-            {/* TITLE */}
-            <p
-                style={{
-                    marginBottom: "8px",
-                    fontSize: "14px",
-                    fontWeight: "600",
-                    color: "var(--text)"
-                }}
-            >
-                Select Personality Mode
-            </p>
-
-            {/* DROPDOWN */}
             <select
+                id="personality-mode"
                 value={personality}
-                onChange={(e) =>
-                    setPersonality(e.target.value)
-                }
-                style={{
-                    width: "100%",
-                    padding: "12px",
-                    borderRadius: "10px",
-
-                    background: "var(--button-bg)",
-                    color: "var(--button-text)",
-
-                    border: "1px solid rgba(255,255,255,0.08)",
-
-                    outline: "none",
-
-                    fontSize: "14px",
-
-                    cursor: "pointer"
-                }}
+                onChange={(e) => setPersonality(e.target.value)}
+                className="sidebar-select"
             >
-
                 <option value="friendly">
                     Friendly
                 </option>
@@ -73,9 +39,7 @@ function PersonalitySelector() {
                 <option value="medical">
                     Medical Assistant
                 </option>
-
             </select>
-
         </div>
     );
 }
