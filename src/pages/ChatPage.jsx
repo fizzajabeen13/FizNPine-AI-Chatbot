@@ -25,8 +25,6 @@ function ChatPage() {
     const {
         messages,
         setMessages,
-        currentChatId,
-        currentChatIdRef,
         updateChatTitle,
         personality
     } = useChat();
