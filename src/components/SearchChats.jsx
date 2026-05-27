@@ -4,7 +4,7 @@ import { FiSearch, FiMessageSquare, FiTrash2 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 
 function SearchChats() {
-    const { chats, currentChatId, setCurrentChatId, deleteChat } = useChat();
+    const { chats, deleteChat } = useChat();
 
     const [query, setQuery] = useState("");
 
@@ -38,8 +38,7 @@ function SearchChats() {
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-                            className={`history-item ${chat.id === currentChatId ? "active" : ""}`}
-                            onClick={() => setCurrentChatId(chat.id)}
+                            className="history-item"
                         >
                             <div className="history-item-content">
                                 <FiMessageSquare className="history-icon" />
