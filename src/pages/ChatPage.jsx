@@ -41,8 +41,11 @@ function ChatPage() {
     }, []);
 
     const handleSendMessage = async () => {
-        console.log("Send button clicked");
-        console.log("API URL:", API_URL);
+       console.log("Send button clicked");
+        console.log(
+         "REACT_APP_API_URL:",
+         process.env.REACT_APP_API_URL
+        );
         const currentMessage = message.trim();
 
         if (!currentMessage || loading) return;
