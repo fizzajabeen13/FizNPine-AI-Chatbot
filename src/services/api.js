@@ -1,19 +1,27 @@
-import axios from "axios";
+// API base URL from environment (Vercel)
+const API_URL = import.meta.env.VITE_API_URL;
 
-// Create axios instance
-const API = axios.create({
-    baseURL: "https://fiz-n-pine-ai-1ptd.vercel.app/api",
-});
-
-// Send message to backend
+// =============================
+// SEND MESSAGE TO AI
+// =============================
 export const sendMessageToAI = async (message, personality) => {
     try {
-        const response = await API.post("/chat", {
-            message,
-            personality
+        const res = await fetch(`${API_URL}/api/chat`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                message,
+                personality
+            }),
         });
 
-        return response.data;
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        return await res.json();
 
     } catch (error) {
         console.error("API Error:", error);
@@ -24,22 +32,12 @@ export const sendMessageToAI = async (message, personality) => {
         };
     }
 };
+
+// =============================
+// CHAT TITLE GENERATOR
+// =============================
 export const generateChatTitle = (message) => {
-  return message.length > 30
-    ? message.substring(0, 30) + "..."
-    : message;
-};
-
-const API_URL = import.meta.env.VITE_API_URL;
-
-export const sendMessage = async (msg) => {
-  const res = await fetch(`${API_URL}/chat`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ message: msg }),
-  });
-
-  return res.json();
+    return message.length > 30
+        ? message.substring(0, 30) + "..."
+        : message;
 };
