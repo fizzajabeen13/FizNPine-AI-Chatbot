@@ -51,7 +51,7 @@ export const ChatProvider = ({ children }) => {
     }, []);
 
     // keep ref synced (if needed externally)
-    const [forceUpdateKey, setForceUpdateKey] = useState(0);
+    const [, setForceUpdate] = useState(0);
 
     // =========================
     // PERSONALITY
@@ -149,7 +149,7 @@ export const ChatProvider = ({ children }) => {
 
     const startNewChat = () => {
         currentChatIdRef.current = null;
-        forceUpdate(n => n + 1); // force UI refresh if needed
+        setForceUpdate(n => n + 1);
     };
 
     // =========================
