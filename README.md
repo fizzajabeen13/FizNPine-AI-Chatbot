@@ -8,6 +8,20 @@ FizNPine AI is an intelligent AI-powered chatbot built to provide fast, natural,
 
 An AI chatbot capable of answering questions, assisting users, and providing conversational support through an intuitive web interface.
 
+## 📸 Screenshots
+
+| Homepage | Coding |
+|-----------|---------|
+| ![](Screenshots/Homepage.PNG) | ![](Screenshots/Coding.PNG) |
+
+| Content Writing | Dark Mode |
+|-----------|---------|
+| ![](Screenshots/ConetntWriting.PNG) | ![](Screenshots/DarkMode.PNG) |
+
+| AI Assistant | Mobile View |
+|-----------|---------|
+| ![](Screenshots/Assisting.PNG) | ![](Screenshots/Responsiveness.PNG) |
+
 ## Features
 
 * AI-powered conversations using Gemini API
@@ -28,6 +42,9 @@ An AI chatbot capable of answering questions, assisting users, and providing con
 
 ## Live Demo
 https://fiz-n-pine-ai-new-8r4c.vercel.app/
+
+## GitHub Repository
+https://github.com/fizzajabeen13/FizNPine-AI-New
 
 ## Author
 
